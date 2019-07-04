@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 import random,time
+from lxml import etree
 
 driver_url = r"C:\Users\mayn\AppData\Local\Google\Chrome\Application\chromedriver.exe"
 urls = [

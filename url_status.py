@@ -28,7 +28,7 @@ def get_real_url(url):
     n = 5
     while(n>0):
         try:
-            res = requests.get(url, timeout=10)
+            res = requests.get('http://' + url, timeout=10)
             state = (res is not None)
             print('{}{}{}'.format(url,split,state))
             return res
@@ -39,11 +39,12 @@ def get_real_url(url):
 
 
 if __name__ == '__main__':
+    path = r'C:\Users\mayn\Desktop\公司\产品工作\竞品数据比对\dif_2019_7_4_15_53.txt'
     #测试网址是否有效
     urls = []
-    with open('C:/Users/mayn/Desktop/测试目标爬虫有效链接.txt', 'r', encoding='utf8')as f:
+    with open(path, 'r', encoding='utf8')as f:
         urls = f.read().split('\n')
     print(urls)
     link = []
     for url in urls:
-        get_real_url('http://' + url)
+        get_real_url(url)

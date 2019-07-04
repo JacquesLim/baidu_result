@@ -11,7 +11,9 @@
 from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
-import random,time
+import random,time,re
+from fake_useragent import UserAgent
+
 
 driver_url = r"C:\Users\mayn\AppData\Local\Google\Chrome\Application\chromedriver.exe"
 ggzyjy_path = 'C:/Users/mayn/Desktop/ggzyjy.txt'
@@ -63,9 +65,43 @@ def get_links(url):
     except:
         get_links(url) #出错继续爬同一url
 
+def get_cp_result(url, keyword):
+    options = webdriver.ChromeOptions()
+    # options.add_argument('--headless') #不弹出浏览器
+    ua = UserAgent()
+    options.add_argument('--user-agent={}'.format(ua.random))
+    # user_data = r'C:\Users\mayn\AppData\Local\Google\Chrome\User Data'
+    # options.add_argument(user_data)
+    browser = webdriver.Chrome(executable_path=driver_url, chrome_options=options)
+    browser.set_page_load_timeout(10)
+    browser.set_script_timeout(10)
+    browser.get(url)
+    time.sleep(3)
+
+    browser.find_element_by_xpath('//*[@id="searchinput"]').send_keys(keyword)
+    browser.find_element_by_xpath('//*[@id="zbSeatchT"]/input[2]').click()
+    time.sleep(5)
+    browser.find_element_by_xpath('//*[@id="zbSeatchT"]/input[2]').click()
+
+    table_html = browser.find_element_by_xpath('// *[ @ id = "formTable"]').text
+    com = re.compile(r'(\d+) 2018')  # 匹配“id”
+    # print(table_html)
+    # soup = BeautifulSoup(browser.page_source, 'html.parser')
+    # table_html = soup.find('table')
+    # tr_html = table_html.findall('tr')
+    # count = len(tr_html)
+
+    return table_html
+
 if __name__ == '__main__':
     #爬取百度关键词搜索结果
-    url = 'https://www.baidu.com/s?wd=投标监管网&pn={}'
-    for i in range(0, 76):
-        print('正在爬取第{}页'.format(i))
-        get_links(url.format(i*10))
+    # url = 'https://www.baidu.com/s?wd=投标监管网&pn={}'
+    # for i in range(0, 76):
+    #     print('正在爬取第{}页'.format(i))
+    #     get_links(url.format(i*10))
+
+    #查看剑鱼搜索结果
+    url = 'https://www.jianyu360.com/jylab/bidsearchforent/index.html'
+    keyword = '陕西华海信息技术有限公司'
+
+    print(get_cp_result(url, keyword))
